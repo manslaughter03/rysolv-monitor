@@ -1,0 +1,19 @@
+{
+  "bsonType": "object",
+  "required": [
+    "user_id",
+    "issue_id"
+  ],
+  "properties": {
+    "user_id": {
+      "bsonType": "integer"
+    },
+    "issue_id": {
+      "bsonType": "string",
+      "pattern": "\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b"
+    },
+    "last_update": {
+      "bsonType": "number"
+    }
+  }
+}

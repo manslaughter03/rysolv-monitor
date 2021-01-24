@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  monitor:
+    image: "manslaughter/rysolv-monitor:latest"
+#   build:
+#     context: .
+    environment:
+      DB_URL: "database:27017"
+      TELEGRAM_TOKEN: "${TELEGRAM_TOKEN}"
+    networks:
+      - "rysolv"
+  database:
+    image: "mongo:latest"
+    networks:
+      - "rysolv"
+    volumes:
+      - "db:/data/db"
+
+networks:
+  rysolv: {}
+
+volumes:
+  db: {}
+

@@ -1,0 +1,12 @@
+{
+  "bsonType": "object",
+  "required": "user_id",
+  "properties": {
+    "user_id": {
+      "bsonType": "integer"
+    },
+    "last_update": {
+      "bsonType": "number"
+    }
+  }
+}
