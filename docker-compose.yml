@@ -3,19 +3,44 @@ version: '3'
 services:
   monitor:
     image: "manslaughter/rysolv-monitor:latest"
-#   build:
-#     context: .
+    build:
+      context: .
     environment:
       DB_URL: "database:27017"
       TELEGRAM_TOKEN: "${TELEGRAM_TOKEN}"
     networks:
       - "rysolv"
+    restart: on-failure
+    depends_on:
+      - database
+
   database:
-    image: "mongo:latest"
+    image: "mongo:4.0"
+    command: mongod --smallfiles --oplogSize 990 --replSet rs0
     networks:
       - "rysolv"
     volumes:
       - "db:/data/db"
+
+  # this container's job is just run the command to initialize the replica set.
+  # it will run the command and remove himself (it will not stay running)
+  mongo-init-replica:
+    image: mongo:4.0
+    networks:
+      - "rysolv"
+    command: >
+      bash -c
+      "for i in `seq 1 30`; do
+      mongo database/rysolv --eval \"
+      rs.initiate({
+        _id: 'rs0',
+        members: [ { _id: 0, host: 'localhost:27017' } ]})\" &&
+          s=$$? && break || s=$$?;
+          echo \"Tried $$i times. Waiting 5 secs...\";
+          sleep 5;
+          done; (exit $$s)"
+    depends_on:
+      - database
 
 networks:
   rysolv: {}

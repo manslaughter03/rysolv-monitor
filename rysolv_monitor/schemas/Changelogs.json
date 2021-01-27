@@ -1,0 +1,12 @@
+{
+  "bsonType": "object",
+  "required": "version",
+  "properties": {
+    "version": {
+      "bsonType": "string"
+    },
+    "text": {
+      "bsonType": "string"
+    }
+  }
+}

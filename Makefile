@@ -5,4 +5,3 @@ lint:
 
 build:
 	docker-compose build
-

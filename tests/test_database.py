@@ -1,8 +1,7 @@
 import pytest
 
-from rysolv_monitor import (
-    RysolvCollections
-)
+from rysolv_monitor.database import RysolvCollections
+
 
 def test_database_init_collections(init_database):
     assert init_database.collections
@@ -23,3 +22,7 @@ def test_database_users_validator(init_database, data):
 ])
 def test_database_watch_issue_validator(init_database, data):
     init_database.collections[RysolvCollections.WatchIssues.name].insert_one(data)
+
+def test_database_find_last_version(init_database):
+    version = init_database.find_last_version()
+    assert not version

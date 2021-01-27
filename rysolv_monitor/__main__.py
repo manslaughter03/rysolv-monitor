@@ -2,18 +2,17 @@
 
 main entrypoint
 """
-from queue import Queue
 from threading import Thread
 from argparse import ArgumentParser
 import os
+import logging
 
 from pymongo import MongoClient
 
-from rysolv_monitor import (
-    RysolvBot,
-    RysolvCrawler,
-    RysolvDatabase
-)
+from rysolv_monitor.crawler import RysolvCrawler
+from rysolv_monitor.database import  RysolvDatabase
+from rysolv_monitor.telegram_bot import RysolvBot
+from rysolv_monitor.logger import configure_logger
 
 def main() -> None:
     """
@@ -39,16 +38,22 @@ def main() -> None:
     _db_client = MongoClient(f"mongodb://{parsed.db_url}")
     _database = RysolvDatabase(_db_client[parsed.db_name])
 
-    queue = Queue()
-    bot = RysolvBot(queue, parsed.telegram_token, _database)
-    crawler = RysolvCrawler(queue, sleep_time=30)
-    bot_thread = Thread(target=bot.run, args=())
+    log_level = logging.DEBUG if parsed.verbose else logging.INFO
+
+    bot_logger = configure_logger("bot", log_level)
+    bot = RysolvBot(parsed.telegram_token, _database, bot_logger)
+#   bot.check_version()
+    crawler_logger = configure_logger("crawler", log_level)
+    crawler = RysolvCrawler(_database, crawler_logger, sleep_time=30)
+    monitor_issue_thread = Thread(target=bot.run_monitor_issue, args=())
+    monitor_comment_thread = Thread(target=bot.run_monitor_comment, args=())
     crawler_thread = Thread(target=crawler.run, args=())
-    bot_thread.start()
+    monitor_issue_thread.start()
+    monitor_comment_thread.start()
     crawler_thread.start()
-    print("All thread start")
     bot.run_telegram_bot()
-    bot_thread.join()
+    monitor_issue_thread.join()
+    monitor_comment_thread.join()
     crawler_thread.join()
 
 if __name__ == "__main__":

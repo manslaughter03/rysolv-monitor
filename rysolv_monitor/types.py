@@ -8,6 +8,12 @@ from .utils import (
 )
 
 
+class Comment(dict):
+    """
+
+    Comment class
+    """
+
 class Issue(dict):
     """
 

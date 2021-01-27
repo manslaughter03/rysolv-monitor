@@ -1,0 +1,35 @@
+{
+  "bsonType": "object",
+  "required": [
+    "body",
+    "createdDate",
+    "githubUrl",
+    "isGithubComment",
+    "profilePic",
+    "userId",
+    "username"
+  ],
+  "properties": {
+    "body": {
+      "bsonType": "string"
+    },
+    "createDate": {
+      "bsonType": "string"
+    },
+    "githubUrl": {
+      "bsonType": "string"
+    },
+    "isGithubComment": {
+      "bsonType": "boolean"
+    },
+    "profilePic": {
+      "bsonType": "string"
+    },
+    "userId": {
+      "bsonType": "string"
+    },
+    "username": {
+      "bsonType": "string"
+    }
+  }
+}
